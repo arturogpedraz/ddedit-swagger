@@ -6,7 +6,7 @@
     "description" : "API proposal for DKV - Mi Salud Al Dia to provide to Digital Doctor."
   },
   "host" : "digital-doctor.herokuapp.com",
-  "basePath" : "/rest",
+  "basePath" : "/",
   "schemes" : [ "https" ],
   "securityDefinitions" : {
     "basicAuth" : {
