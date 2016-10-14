@@ -1059,6 +1059,10 @@
         "msadConditionVersionAccepted" : {
           "type" : "string"
         },
+        "signedCi" : {
+          "type" : "string",
+          "format" : "base64"
+        },
         "profiles" : {
           "type" : "array",
           "items" : {
