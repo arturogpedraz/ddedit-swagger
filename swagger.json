@@ -1050,6 +1050,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "msadConditionVersionAccepted" : {
+          "type" : "string"
+        },
         "profiles" : {
           "type" : "array",
           "items" : {
