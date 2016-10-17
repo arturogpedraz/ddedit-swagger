@@ -534,7 +534,7 @@
         }
       }
     },
-    "/textAutocomplete" : {
+    "/{profileId}/textAutocomplete" : {
       "get" : {
         "description" : "Search for wods to autocomplete the user sentences, it will return a list of words sorted by priority",
         "operationId" : "textAutocomplete",
@@ -552,6 +552,12 @@
           "in" : "header",
           "description" : "The language to provide autocomplete hints. If it is absent, English is expected to be the default language.",
           "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "path",
+          "description" : "ID of profile",
+          "required" : true,
           "type" : "string"
         } ],
         "responses" : {
@@ -573,7 +579,7 @@
         }
       }
     },
-    "/statement" : {
+    "/{profileId}/statement" : {
       "get" : {
         "description" : "Search for statements by category",
         "operationId" : "statements",
@@ -596,6 +602,12 @@
           "in" : "header",
           "description" : "The language to provide statements. If it is absent, English is expected to be the default language.",
           "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "path",
+          "description" : "ID of profile",
+          "required" : true,
           "type" : "string"
         } ],
         "responses" : {
