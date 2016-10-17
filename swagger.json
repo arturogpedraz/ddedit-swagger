@@ -1,7 +1,7 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "version" : "0.4",
+    "version" : "0.5",
     "title" : "Mi Salud Al Dia API for Digital Doctor",
     "description" : "API proposal for DKV - Mi Salud Al Dia to provide to Digital Doctor."
   },
