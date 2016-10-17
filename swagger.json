@@ -485,7 +485,7 @@
         }
       }
     },
-    "/session/{sessionId}/conclusion" : {
+    "/session/{sessionId}/{profileId}/conclusion" : {
       "post" : {
         "description" : "Ends given session and retrieve the results",
         "operationId" : "conclusion",
@@ -504,6 +504,12 @@
           "in" : "header",
           "description" : "The language to provide the results. If it is absent, English is expected to be the default language.",
           "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "path",
+          "description" : "ID of profile",
+          "required" : true,
           "type" : "string"
         } ],
         "responses" : {
