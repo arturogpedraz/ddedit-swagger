@@ -254,8 +254,7 @@
           "in" : "query",
           "description" : "ID of profile to get PHR. If not informed the anonymous profile with empty data will be retrieved",
           "required" : false,
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "string"
         }, {
           "name" : "Accept-Language",
           "in" : "header",
@@ -305,8 +304,7 @@
           "in" : "path",
           "description" : "ID of profile to edit PHR",
           "required" : true,
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "string"
         }, {
           "name" : "phr",
           "in" : "body",
@@ -1231,9 +1229,12 @@
       }
     },
     "Session" : {
-      "required" : [ "id" ],
+      "required" : [ "id", "profileId" ],
       "properties" : {
         "id" : {
+          "type" : "string"
+        },
+        "profileId" : {
           "type" : "string"
         },
         "reason" : {
