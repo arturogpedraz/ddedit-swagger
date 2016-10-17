@@ -1265,12 +1265,9 @@
       }
     },
     "Session" : {
-      "required" : [ "id", "profileId" ],
+      "required" : [ "id" ],
       "properties" : {
         "id" : {
-          "type" : "string"
-        },
-        "profileId" : {
           "type" : "string"
         },
         "reason" : {
