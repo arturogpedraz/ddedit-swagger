@@ -410,7 +410,7 @@
           "required" : false,
           "type" : "string"
         }, {
-          "name" : "profileId",
+          "name" : "",
           "in" : "path",
           "description" : "ID of profile to response",
           "required" : true,
