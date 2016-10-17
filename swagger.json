@@ -381,7 +381,7 @@
         }
       }
     },
-    "/session/{sessionId}/{profileId}/response" : {
+    "/session/{profileId}/{sessionId}/response" : {
       "post" : {
         "description" : "Adds responses to an already created session",
         "operationId" : "addResponse",
@@ -485,7 +485,7 @@
         }
       }
     },
-    "/session/{sessionId}/{profileId}/conclusion" : {
+    "/session/{profileId}/{sessionId}/conclusion" : {
       "post" : {
         "description" : "Ends given session and retrieve the results",
         "operationId" : "conclusion",
