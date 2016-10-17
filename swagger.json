@@ -1108,6 +1108,10 @@
         },
         "url" : {
           "type" : "string"
+        },
+        "text" : {
+          "type" : "string",
+          "format" : "base64"
         }
       }
     },
