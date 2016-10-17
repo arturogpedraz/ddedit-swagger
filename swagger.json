@@ -336,7 +336,7 @@
         }
       }
     },
-    "/session/{profileId}" : {
+    "/session" : {
       "post" : {
         "description" : "Creates an evaluation session.",
         "operationId" : "createSession",
@@ -360,9 +360,9 @@
           "type" : "string"
         }, {
           "name" : "profileId",
-          "in" : "path",
-          "description" : "ID of profile to start the session with",
-          "required" : true,
+          "in" : "query",
+          "description" : "ID of profile to start the session with. If none anonimous will be used.",
+          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -381,7 +381,7 @@
         }
       }
     },
-    "/session/{profileId}/{sessionId}/response" : {
+    "/session/{sessionId}/response" : {
       "post" : {
         "description" : "Adds responses to an already created session",
         "operationId" : "addResponse",
@@ -411,9 +411,9 @@
           "type" : "string"
         }, {
           "name" : "profileId",
-          "in" : "path",
-          "description" : "ID of profile to response",
-          "required" : true,
+          "in" : "query",
+          "description" : "ID of profile to response. If none anonimous will be used.",
+          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -458,9 +458,9 @@
           "type" : "string"
         }, {
           "name" : "profileId",
-          "in" : "path",
-          "description" : "ID of profile to response",
-          "required" : true,
+          "in" : "query",
+          "description" : "ID of profile to response. If none anonimous will be used.",
+          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -485,7 +485,7 @@
         }
       }
     },
-    "/session/{profileId}/{sessionId}/conclusion" : {
+    "/session/{sessionId}/conclusion" : {
       "post" : {
         "description" : "Ends given session and retrieve the results",
         "operationId" : "conclusion",
@@ -507,9 +507,9 @@
           "type" : "string"
         }, {
           "name" : "profileId",
-          "in" : "path",
-          "description" : "ID of profile",
-          "required" : true,
+          "in" : "query",
+          "description" : "ID of profile. If none anonimous will be used.",
+          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -534,7 +534,7 @@
         }
       }
     },
-    "/{profileId}/textAutocomplete" : {
+    "/textAutocomplete" : {
       "get" : {
         "description" : "Search for wods to autocomplete the user sentences, it will return a list of words sorted by priority",
         "operationId" : "textAutocomplete",
@@ -555,9 +555,9 @@
           "type" : "string"
         }, {
           "name" : "profileId",
-          "in" : "path",
-          "description" : "ID of profile",
-          "required" : true,
+          "in" : "query",
+          "description" : "ID of profile. If none anonimous will be used.",
+          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -579,7 +579,7 @@
         }
       }
     },
-    "/{profileId}/statement" : {
+    "/statement" : {
       "get" : {
         "description" : "Search for statements by category",
         "operationId" : "statements",
@@ -605,9 +605,9 @@
           "type" : "string"
         }, {
           "name" : "profileId",
-          "in" : "path",
-          "description" : "ID of profile",
-          "required" : true,
+          "in" : "query",
+          "description" : "ID of profile. If none anonimous will be used.",
+          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
