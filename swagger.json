@@ -456,6 +456,12 @@
           "description" : "The language to provide the suggestions. If it is absent, English is expected to be the default language.",
           "required" : false,
           "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "path",
+          "description" : "ID of profile to response",
+          "required" : true,
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
