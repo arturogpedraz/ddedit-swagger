@@ -1074,6 +1074,50 @@
           }
         }
       }
+    },
+    "/users/{userId}/documents/{documentId}" : {
+      "get" : {
+        "description" : "Download the document related with documentId",
+        "operationId" : "downloadDocument",
+        "tags" : [ "Files and Documents" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to see the documents",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none, userId will be used.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "documentId",
+          "in" : "path",
+          "description" : "ID of the document to be downloaded.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "content of the file.",
+            "schema" : {
+              "type" : "string",
+              "format" : "byte"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "definitions" : {
