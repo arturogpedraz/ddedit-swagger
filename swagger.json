@@ -1031,7 +1031,7 @@
     },
     "/users/{userId}/documents" : {
       "get" : {
-        "description" : "Gets the documents related to the user profile",
+        "description" : "Gets the documents located on the user directory of MSAD.",
         "operationId" : "documents",
         "tags" : [ "Files and Documents" ],
         "security" : [ {
