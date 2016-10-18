@@ -1243,8 +1243,7 @@
       "required" : [ "id", "type", "date" ],
       "properties" : {
         "id" : {
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "string"
         },
         "type" : {
           "type" : "string"
