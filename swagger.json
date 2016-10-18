@@ -1086,7 +1086,7 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
-          "description" : "ID of the user who wants to see the documents",
+          "description" : "ID of the user who wants to download the document.",
           "required" : true,
           "type" : "string"
         }, {
