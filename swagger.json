@@ -1028,6 +1028,52 @@
           }
         }
       }
+    },
+    "/users/{userId}/documents" : {
+      "get" : {
+        "description" : "Gets the documents related to the user profile",
+        "operationId" : "documents",
+        "tags" : [ "Files and Documents" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to see the documents",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the results. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none, userId will be used.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of documents",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/FileItem"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "definitions" : {
