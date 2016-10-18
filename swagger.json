@@ -1268,6 +1268,9 @@
         "lenght" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "virtual" : {
+          "type" : "boolean"
         }
       }
     },
