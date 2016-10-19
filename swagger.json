@@ -1793,6 +1793,9 @@
         },
         "file" : {
           "$ref" : "#/definitions/FileItem"
+        },
+        "type" : {
+          "type" : "string"
         }
       }
     },
