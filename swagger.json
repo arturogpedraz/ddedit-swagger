@@ -36,12 +36,6 @@
           "schema" : {
             "$ref" : "#/definitions/User"
           }
-        }, {
-          "name" : "Accept-Language",
-          "in" : "header",
-          "description" : "The language to receive the information with. ",
-          "required" : false,
-          "type" : "string"
         } ],
         "responses" : {
           "200" : {
