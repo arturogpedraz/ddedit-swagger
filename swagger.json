@@ -1692,12 +1692,10 @@
       "required" : [ "startTime", "endTime" ],
       "properties" : {
         "startTime" : {
-          "type" : "string",
-          "format" : "date-time"
+          "type" : "string"
         },
         "endTime" : {
-          "type" : "string",
-          "format" : "date-time"
+          "type" : "string"
         }
       }
     },
@@ -1738,7 +1736,7 @@
         },
         "date" : {
           "type" : "string",
-          "format" : "date-time"
+          "format" : "date"
         },
         "profile" : {
           "$ref" : "#/definitions/Profile"
