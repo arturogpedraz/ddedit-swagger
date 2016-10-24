@@ -1665,8 +1665,7 @@
           "format" : "date"
         },
         "time" : {
-          "type" : "string",
-          "format" : "date-time"
+          "type" : "string"
         },
         "timeZone" : {
           "type" : "string"
