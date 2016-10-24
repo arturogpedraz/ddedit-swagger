@@ -1135,6 +1135,12 @@
           "type" : "string",
           "format" : "base64"
         },
+        "phone" : {
+          "type" : "string"
+        },
+        "cellPhone" : {
+          "type" : "string"
+        },
         "profiles" : {
           "type" : "array",
           "items" : {
