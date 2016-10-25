@@ -851,33 +851,6 @@
         }
       }
     },
-    "/consultation/languages" : {
-      "get" : {
-        "description" : "Gets the available languages for consultations and videocalls",
-        "operationId" : "availableLanguages",
-        "tags" : [ "Consultation" ],
-        "security" : [ {
-          "JWT" : [ ]
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "List of available languages",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/Language"
-              }
-            }
-          },
-          "default" : {
-            "description" : "unexpected error",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
     "/users/{userId}/alerts" : {
       "get" : {
         "description" : "Gets a list of alerts (videocalls, new documents) in the near future for the user and their profiles.",
