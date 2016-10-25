@@ -910,38 +910,6 @@
             }
           }
         }
-      },
-      "put" : {
-        "description" : "clean the alerts.",
-        "operationId" : "cleanAlerts",
-        "tags" : [ "Alerts And History" ],
-        "security" : [ {
-          "JWT" : [ ]
-        } ],
-        "parameters" : [ {
-          "name" : "userId",
-          "in" : "path",
-          "description" : "ID of the user who wants to clean their alerts",
-          "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "clean",
-          "in" : "query",
-          "description" : "paramter to clean alerts or not",
-          "required" : true,
-          "type" : "boolean"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Alerts cleaned"
-          },
-          "default" : {
-            "description" : "unexpected error",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
-            }
-          }
-        }
       }
     },
     "/users/{userId}/history" : {
