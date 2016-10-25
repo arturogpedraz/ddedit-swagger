@@ -1746,6 +1746,9 @@
         },
         "type" : {
           "type" : "string"
+        },
+        "recomendations" : {
+          "type" : "string"
         }
       }
     },
