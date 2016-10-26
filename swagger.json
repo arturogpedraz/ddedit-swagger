@@ -131,8 +131,7 @@
           "in" : "path",
           "description" : "ID of user to edit",
           "required" : true,
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "string"
         }, {
           "name" : "user",
           "in" : "body",
