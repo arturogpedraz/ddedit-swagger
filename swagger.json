@@ -1,3 +1,1738 @@
 {
-  "swagger" : "2.0"
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "0.5",
+    "title" : "Mi Salud Al Dia API for Digital Doctor",
+    "description" : "API proposal for DKV - Mi Salud Al Dia to provide to Digital Doctor."
+  },
+  "host" : "digital-doctor.herokuapp.com",
+  "basePath" : "/",
+  "schemes" : [ "https" ],
+  "securityDefinitions" : {
+    "basicAuth" : {
+      "type" : "basic",
+      "description" : "HTTP Basic Authentication, with secuare channel over TLS 1.2."
+    },
+    "JWT" : {
+      "type" : "apiKey",
+      "description" : "Json Web Token",
+      "name" : "Authentication",
+      "in" : "header"
+    }
+  },
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
+  "paths" : {
+    "/users/login" : {
+      "post" : {
+        "description" : "Checks whether the user credentials provided are correct and, returns all the data related with user.",
+        "operationId" : "login",
+        "tags" : [ "Login" ],
+        "parameters" : [ {
+          "name" : "user",
+          "in" : "body",
+          "description" : "User object containing the credentials to be checked by MSAD. userId and password fields must be set.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "User credentials are correct.",
+            "headers" : {
+              "Authorization" : {
+                "type" : "string",
+                "description" : "JWT Token that must be propagated in following requests"
+              }
+            },
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "403" : {
+            "description" : "Incorrect user credentials.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users" : {
+      "post" : {
+        "description" : "Creates a new user for Digital Doctor; DKV corporate systems store that new user.",
+        "operationId" : "addUser",
+        "tags" : [ "User Management" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        }, {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "user",
+          "in" : "body",
+          "description" : "User object with all the Digital Doctor user data. User profiles won't be editted.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to send the e-mail with the password.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "The user has been created. 'conditionsAccepted' parameter must be 'true'.",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "400" : {
+            "description" : "User cannot be created.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "409" : {
+            "description" : "User already exists.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}" : {
+      "put" : {
+        "description" : "Edit a user identified by ID",
+        "operationId" : "editUser",
+        "tags" : [ "User Management" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID of user to edit",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "user",
+          "in" : "body",
+          "description" : "User to be edited. User profiles won't be editted.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "user response",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "404" : {
+            "description" : "user not found",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/recovery" : {
+      "post" : {
+        "description" : "Starts the password recovery process",
+        "operationId" : "passwordRecovery",
+        "tags" : [ "Login" ],
+        "parameters" : [ {
+          "name" : "user",
+          "in" : "body",
+          "description" : "The user which password recovery process is started for. UserId and insuranceNumber are required.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/User"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Password recovery process successfully started. The response is the same user object received.",
+            "schema" : {
+              "$ref" : "#/definitions/User"
+            }
+          },
+          "404" : {
+            "description" : "User not found.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/terms" : {
+      "get" : {
+        "description" : "Gets the Terms and Conditions, allowing Digital Doctor to show the most recent available version of this legal text.",
+        "operationId" : "getTermsAndConditions",
+        "tags" : [ "Login" ],
+        "parameters" : [ {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the Terms & Conditions text. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Terms & Conditions text.",
+            "schema" : {
+              "$ref" : "#/definitions/Terms"
+            }
+          },
+          "404" : {
+            "description" : "Terms & Conditions text not found in the specified language.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put" : {
+        "description" : "Accepts the Terms and Conditions.",
+        "operationId" : "acceptTermsAndConditions",
+        "tags" : [ "Login" ],
+        "parameters" : [ {
+          "name" : "terms",
+          "in" : "body",
+          "description" : "User object with all the Digital Doctor user data. User profiles won't be editted.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Terms"
+          }
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the Terms & Conditions text. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Terms & Conditions text.",
+            "schema" : {
+              "$ref" : "#/definitions/Terms"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/phr" : {
+      "get" : {
+        "description" : "Gets the PHR for a given userId and profile id",
+        "operationId" : "getPhr",
+        "tags" : [ "PersonalHealthRecord" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user to get PHR",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile to get PHR. If not informed the anonymous profile with empty data will be retrieved",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the Phr. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Obtained PHR",
+            "schema" : {
+              "$ref" : "#/definitions/Phr"
+            }
+          },
+          "404" : {
+            "description" : "Profile and userId not found.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/phr/{profileId}" : {
+      "put" : {
+        "description" : "Edits the PHR for a given userId and profile id",
+        "operationId" : "editPhr",
+        "tags" : [ "PersonalHealthRecord" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of user to edit PHR",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "path",
+          "description" : "ID of profile to edit PHR",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "phr",
+          "in" : "body",
+          "description" : "phr to be edited",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Phr"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Edited PHR",
+            "schema" : {
+              "$ref" : "#/definitions/Phr"
+            }
+          },
+          "404" : {
+            "description" : "Profile and userId not found.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/session" : {
+      "post" : {
+        "description" : "Creates an evaluation session.",
+        "operationId" : "createSession",
+        "tags" : [ "Evaluation" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "session",
+          "in" : "body",
+          "description" : "Information about the session being created",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Session"
+          }
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the suggestions. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile to start the session with. If none anonimous will be used.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Session just created",
+            "schema" : {
+              "$ref" : "#/definitions/Session"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/session/{sessionId}/response" : {
+      "post" : {
+        "description" : "Adds responses to an already created session",
+        "operationId" : "addResponse",
+        "tags" : [ "Evaluation" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "sessionId",
+          "in" : "path",
+          "description" : "ID of the session to add responses",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "session",
+          "in" : "body",
+          "description" : "Information about the session being created",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Session"
+          }
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the suggestions. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile to response. If none anonimous will be used.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Session just created",
+            "schema" : {
+              "$ref" : "#/definitions/Session"
+            }
+          },
+          "404" : {
+            "description" : "SessionId does not exist.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "description" : "Deletes the last response form the given session",
+        "operationId" : "deleteResponse",
+        "tags" : [ "Evaluation" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "sessionId",
+          "in" : "path",
+          "description" : "ID of the session to add responses",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the suggestions. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile to response. If none anonimous will be used.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Session modified after response deletion",
+            "schema" : {
+              "$ref" : "#/definitions/Session"
+            }
+          },
+          "404" : {
+            "description" : "SessionId does not exist.",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/textAutocomplete" : {
+      "get" : {
+        "description" : "Search for wods to autocomplete the user sentences, it will return a list of words sorted by priority",
+        "operationId" : "textAutocomplete",
+        "tags" : [ "Autocomplete" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "word",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide autocomplete hints. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none anonimous will be used.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of matching words",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/TextAutocomplete"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/statement" : {
+      "get" : {
+        "description" : "Search for statements by category",
+        "operationId" : "statements",
+        "tags" : [ "Autocomplete" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "category",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "word",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide statements. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none anonimous will be used.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of matching words",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Statement"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/callMeBack" : {
+      "post" : {
+        "description" : "Create a call me back consultation",
+        "operationId" : "createCallMeBack",
+        "tags" : [ "Consultation" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who creates the call me back consultation",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "callMeBack",
+          "in" : "body",
+          "description" : "Call me back consultation to be created",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/CallMeBack"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Call me back created",
+            "schema" : {
+              "$ref" : "#/definitions/CallMeBack"
+            }
+          },
+          "404" : {
+            "description" : "Erroneous consultation or user not found",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/videoCall" : {
+      "post" : {
+        "description" : "Create a video call consultation",
+        "operationId" : "createVideoCall",
+        "tags" : [ "Consultation" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who creates the video call consultation",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "videoCall",
+          "in" : "body",
+          "description" : "Video call consultation to be created",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/VideoCall"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Video call created",
+            "schema" : {
+              "$ref" : "#/definitions/VideoCall"
+            }
+          },
+          "400" : {
+            "description" : "DD-4002-DDOCTOR_CONTENT_NOT_ALLOWED",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "404" : {
+            "description" : "Erroneous consultation or user not found",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/videoCall/{id}/start" : {
+      "post" : {
+        "description" : "Starts a video call",
+        "operationId" : "startVideoCall",
+        "tags" : [ "Consultation" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who creates the video call consultation",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id of the video call to be started",
+          "required" : true,
+          "type" : "number",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Video call started",
+            "schema" : {
+              "$ref" : "#/definitions/VseeData"
+            }
+          },
+          "404" : {
+            "description" : "user id or videocall id not found",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/videoCall/{id}/ics" : {
+      "get" : {
+        "description" : "create a iCalendar reminder for video call",
+        "operationId" : "createVideoCallReminder",
+        "tags" : [ "Consultation" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "produces" : [ "application/octet-stream" ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to creat the reminder for the call consultation",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id of the video call to be reminded",
+          "required" : true,
+          "type" : "number",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Video call reminder created",
+            "schema" : {
+              "type" : "string",
+              "format" : "byte"
+            }
+          },
+          "404" : {
+            "description" : "user id or videocall id not found",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/videoCall/{id}/finish" : {
+      "post" : {
+        "description" : "Finish a video call",
+        "operationId" : "finishVideoCall",
+        "tags" : [ "Consultation" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who finish the video call consultation",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id of the video call to be finished",
+          "required" : true,
+          "type" : "number",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Video call started"
+          },
+          "404" : {
+            "description" : "user id or videocall id not found",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/videoCall/availability" : {
+      "get" : {
+        "description" : "Gets the video call availability for a range of dates",
+        "operationId" : "videoCallAvailability",
+        "tags" : [ "Consultation" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "format" : "date"
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "format" : "date"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of available dates",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/VideoDayAvailability"
+              }
+            }
+          },
+          "404" : {
+            "description" : "wrong date format",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/alerts" : {
+      "get" : {
+        "description" : "Gets a list of alerts (videocalls, new documents) in the near future for the user and their profiles.",
+        "operationId" : "alerts",
+        "tags" : [ "Alerts And History" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to see the alerts",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of available alerts",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Alert"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/history" : {
+      "get" : {
+        "description" : "Gets a list of the videocalls, callmeback events and its corresponding reports of the user and their profiles.",
+        "operationId" : "history",
+        "tags" : [ "Alerts And History" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to see the alerts",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of available alerts",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Event"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/documents" : {
+      "get" : {
+        "description" : "Gets the documents located on the user directory of MSAD.",
+        "operationId" : "documents",
+        "tags" : [ "Files and Documents" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to see the documents",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the results. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none, userId will be used.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of documents",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/FileItem"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/documents/{documentId}" : {
+      "get" : {
+        "description" : "Download the document related with documentId",
+        "operationId" : "downloadDocument",
+        "tags" : [ "Files and Documents" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to download the document.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none, userId will be used.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "documentId",
+          "in" : "path",
+          "description" : "ID of the document to be downloaded.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "content of the file.",
+            "schema" : {
+              "type" : "string",
+              "format" : "byte"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Error" : {
+      "required" : [ "code", "title", "detail", "href" ],
+      "properties" : {
+        "code" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "title" : {
+          "type" : "string"
+        },
+        "detail" : {
+          "type" : "string"
+        },
+        "href" : {
+          "type" : "string"
+        },
+        "errorSource" : {
+          "type" : "string"
+        },
+        "codeSource" : {
+          "type" : "string"
+        },
+        "additionalInfo" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "User" : {
+      "required" : [ "userId" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "userId" : {
+          "type" : "string"
+        },
+        "password" : {
+          "type" : "string",
+          "format" : "password"
+        },
+        "insuranceNumber" : {
+          "type" : "string"
+        },
+        "birthDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "email" : {
+          "type" : "string",
+          "format" : "email"
+        },
+        "conditionVersionAccepted" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "msadConditionVersionAccepted" : {
+          "type" : "string"
+        },
+        "signedCi" : {
+          "type" : "string",
+          "format" : "base64"
+        },
+        "phone" : {
+          "type" : "string"
+        },
+        "cellPhone" : {
+          "type" : "string"
+        },
+        "profiles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Profile"
+          }
+        },
+        "vseeConnectionData" : {
+          "$ref" : "#/definitions/VseeConnectionData"
+        }
+      }
+    },
+    "Profile" : {
+      "required" : [ "id" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "birthDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "sex" : {
+          "type" : "string"
+        },
+        "relationship" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Terms" : {
+      "required" : [ "version", "url" ],
+      "properties" : {
+        "version" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "msadConditionVersion" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "text" : {
+          "type" : "string",
+          "format" : "base64"
+        }
+      }
+    },
+    "FileItem" : {
+      "required" : [ "id", "type", "date" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "metadata" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        },
+        "data" : {
+          "type" : "string",
+          "format" : "base64"
+        },
+        "date" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "lenght" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "virtual" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "Phr" : {
+      "properties" : {
+        "cathegories" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Cathegory"
+          }
+        },
+        "vitalSigns" : {
+          "$ref" : "#/definitions/VitalSigns"
+        }
+      }
+    },
+    "Statement" : {
+      "required" : [ "id" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "shortDescription" : {
+          "type" : "string"
+        },
+        "images" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "innerStatements" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Statement"
+          }
+        },
+        "questionType" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "multiAnswerMaxCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "response" : {
+          "type" : "string"
+        },
+        "answerSource" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Cathegory" : {
+      "required" : [ "id" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "descpription" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "type" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "statements" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Statement"
+          }
+        }
+      }
+    },
+    "Session" : {
+      "required" : [ "id" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "reason" : {
+          "type" : "string"
+        },
+        "birthDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "sex" : {
+          "type" : "string"
+        },
+        "responses" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Statement"
+          }
+        },
+        "answers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Statement"
+          }
+        },
+        "finalizationPercentage" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "inputRecomendation" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Statement"
+          }
+        },
+        "nextStatement" : {
+          "$ref" : "#/definitions/Statement"
+        },
+        "vitalSigns" : {
+          "$ref" : "#/definitions/VitalSigns"
+        },
+        "deviceData" : {
+          "$ref" : "#/definitions/DeviceData"
+        },
+        "result" : {
+          "$ref" : "#/definitions/Result"
+        }
+      }
+    },
+    "VitalSigns" : {
+      "properties" : {
+        "fc" : {
+          "$ref" : "#/definitions/VitalSign"
+        },
+        "fr" : {
+          "$ref" : "#/definitions/VitalSign"
+        },
+        "glycemia" : {
+          "$ref" : "#/definitions/VitalSign"
+        },
+        "saturation" : {
+          "$ref" : "#/definitions/VitalSign"
+        },
+        "tad" : {
+          "$ref" : "#/definitions/VitalSign"
+        },
+        "tas" : {
+          "$ref" : "#/definitions/VitalSign"
+        },
+        "temperature" : {
+          "$ref" : "#/definitions/VitalSign"
+        }
+      }
+    },
+    "VitalSign" : {
+      "properties" : {
+        "value" : {
+          "type" : "string"
+        },
+        "minValue" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "maxValue" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "initialValue" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "unit" : {
+          "type" : "string"
+        }
+      }
+    },
+    "DeviceData" : {
+      "properties" : {
+        "altitude" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "altitudeAccuracy" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "appVersion" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "latitude" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "longitude" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "locationAccuracy" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "locationRegion" : {
+          "type" : "string"
+        }
+      }
+    },
+    "TextAutocomplete" : {
+      "properties" : {
+        "innerIndexBegin" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "innerIndexEnd" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "word" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Result" : {
+      "properties" : {
+        "noResult" : {
+          "type" : "boolean"
+        },
+        "resultDescription" : {
+          "type" : "string"
+        },
+        "resultLevel" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "date" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "conclusions" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Conclusion"
+          }
+        },
+        "recomendation" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Conclusion" : {
+      "required" : [ "id" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "common" : {
+          "type" : "boolean"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "descriptionAdditionalInfo" : {
+          "type" : "string"
+        },
+        "descriptionCauses" : {
+          "type" : "string"
+        },
+        "descriptionComplementaryTests" : {
+          "type" : "string"
+        },
+        "descriptionExtended" : {
+          "type" : "string"
+        },
+        "descriptionExtendedUrl" : {
+          "type" : "string"
+        },
+        "descriptionGeneral" : {
+          "type" : "string"
+        },
+        "descriptionKeywords" : {
+          "type" : "string"
+        },
+        "descriptionSymptoms" : {
+          "type" : "string"
+        },
+        "descriptionTreatmentd" : {
+          "type" : "string"
+        },
+        "frequency" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "icd10" : {
+          "type" : "string"
+        },
+        "icd9" : {
+          "type" : "string"
+        },
+        "hasDescriptionExtended" : {
+          "type" : "boolean"
+        },
+        "images" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "level" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "service" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "percentage" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "specialties" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "urgency" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "score" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "actions" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Action"
+          }
+        }
+      }
+    },
+    "Action" : {
+      "required" : [ "id" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "complexity" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "phase" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Consultation" : {
+      "required" : [ "id", "reason", "profile", "type", "language", "date", "time", "timeZone" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "type" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "profile" : {
+          "$ref" : "#/definitions/Profile"
+        },
+        "reason" : {
+          "type" : "string"
+        },
+        "language" : {
+          "$ref" : "#/definitions/Language"
+        },
+        "date" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "time" : {
+          "type" : "string"
+        },
+        "timeZone" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
+        "doneDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "patientFiles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/FileItem"
+          }
+        }
+      }
+    },
+    "CallMeBack" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Consultation"
+      }, {
+        "properties" : {
+          "phonePrefix" : {
+            "type" : "string"
+          },
+          "phoneNumber" : {
+            "type" : "string"
+          }
+        }
+      } ]
+    },
+    "VideoCall" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Consultation"
+      }, {
+        "properties" : {
+          "scheduled" : {
+            "type" : "boolean"
+          }
+        }
+      } ]
+    },
+    "VseeData" : {
+      "properties" : {
+        "uri" : {
+          "type" : "string"
+        },
+        "doctorUser" : {
+          "type" : "string"
+        }
+      }
+    },
+    "VideoDayAvailability" : {
+      "required" : [ "date", "slots" ],
+      "properties" : {
+        "date" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "slots" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Slot"
+          }
+        }
+      }
+    },
+    "Slot" : {
+      "required" : [ "startTime", "endTime" ],
+      "properties" : {
+        "startTime" : {
+          "type" : "string"
+        },
+        "endTime" : {
+          "type" : "string"
+        }
+      }
+    },
+    "VseeConnectionData" : {
+      "properties" : {
+        "user" : {
+          "type" : "string"
+        },
+        "password" : {
+          "type" : "string"
+        },
+        "languages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Language"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "properties" : {
+        "iso639" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Alert" : {
+      "required" : [ "id" ],
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "reason" : {
+          "type" : "string"
+        },
+        "date" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "time" : {
+          "type" : "string"
+        },
+        "profile" : {
+          "$ref" : "#/definitions/Profile"
+        },
+        "file" : {
+          "$ref" : "#/definitions/FileItem"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "recomendations" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Event" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Alert"
+      } ]
+    }
+  }
 }
