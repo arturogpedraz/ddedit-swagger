@@ -1087,6 +1087,12 @@
           "description" : "ID of the alert wich wants to be mark as read.",
           "required" : true,
           "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none, userId will be used.",
+          "required" : false,
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
