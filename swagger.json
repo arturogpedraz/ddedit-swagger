@@ -1090,13 +1090,10 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "List of available alerts",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/Alert"
-              }
-            }
+            "description" : "no response"
+          },
+          "400" : {
+            "description" : "DD009 -> 'Cannot mark as read non videocall alerts'"
           },
           "default" : {
             "description" : "unexpected error",
