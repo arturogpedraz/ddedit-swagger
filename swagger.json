@@ -1,7 +1,7 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "version" : "0.5",
+    "version" : "0.8",
     "title" : "Mi Salud Al Dia API for Digital Doctor",
     "description" : "API proposal for DKV - Mi Salud Al Dia to provide to Digital Doctor."
   },
@@ -91,7 +91,7 @@
           "type" : "string"
         } ],
         "responses" : {
-          "201" : {
+          "200" : {
             "description" : "The user has been created. 'conditionsAccepted' parameter must be 'true'.",
             "schema" : {
               "$ref" : "#/definitions/User"
@@ -176,6 +176,12 @@
           "schema" : {
             "$ref" : "#/definitions/User"
           }
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide send the message. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
@@ -611,6 +617,51 @@
         }
       }
     },
+    "/diseases" : {
+      "get" : {
+        "description" : "Search for diseases",
+        "operationId" : "diseases",
+        "tags" : [ "Autocomplete" ],
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "word",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide statements. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none anonimous will be used.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of matching diseases",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Disease"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/users/{userId}/callMeBack" : {
       "post" : {
         "description" : "Create a call me back consultation",
@@ -884,6 +935,104 @@
         }
       }
     },
+    "/users/chat" : {
+      "get" : {
+        "description" : "Gets the available chats.",
+        "operationId" : "availableChats",
+        "tags" : [ "Consultation" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of available chats",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Chat"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post" : {
+        "description" : "Create a chat in order to make a consultation to a doctor.",
+        "operationId" : "createChat",
+        "tags" : [ "Consultation" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "chat",
+          "in" : "body",
+          "description" : "Chat to be created",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Chat"
+          }
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to provide the results. If it is absent, English is expected to be the default language.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Created chat and its identifier",
+            "schema" : {
+              "$ref" : "#/definitions/Chat"
+            }
+          },
+          "402" : {
+            "description" : "CODIGO_ERROR_PENDIENTE",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/chat/{chatId}/messages" : {
+      "get" : {
+        "description" : "Get all the messages from a chat.",
+        "operationId" : "chatMessages",
+        "tags" : [ "Consultation" ],
+        "parameters" : [ {
+          "name" : "chatId",
+          "in" : "path",
+          "description" : "chatId to receive the messages",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Chat incluiding all the messages.",
+            "schema" : {
+              "$ref" : "#/definitions/Chat"
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/users/{userId}/alerts" : {
       "get" : {
         "description" : "Gets a list of alerts (videocalls, new documents) in the near future for the user and their profiles.",
@@ -896,6 +1045,46 @@
           "name" : "userId",
           "in" : "path",
           "description" : "ID of the user who wants to see the alerts",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of available alerts",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Alert"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/alerts/{alertId}" : {
+      "delete" : {
+        "description" : "Mark the alert as read.",
+        "operationId" : "readAlert",
+        "tags" : [ "Alerts And History" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to see the alerts",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "alertId",
+          "in" : "path",
+          "description" : "ID of the alert wich wants to be mark as read.",
           "required" : true,
           "type" : "string"
         } ],
@@ -932,6 +1121,24 @@
           "description" : "ID of the user who wants to see the alerts",
           "required" : true,
           "type" : "string"
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "format" : "date"
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "format" : "date"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none no filter will be applied.",
+          "required" : false,
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
@@ -942,6 +1149,44 @@
                 "$ref" : "#/definitions/Event"
               }
             }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "description" : "deletes the event",
+        "operationId" : "deleteEvent",
+        "tags" : [ "Alerts And History" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to delete the document.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none, userId will be used.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "eventId",
+          "in" : "query",
+          "description" : "ID of the event to be deleted.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "no response"
           },
           "default" : {
             "description" : "unexpected error",
@@ -1040,6 +1285,80 @@
             }
           }
         }
+      },
+      "delete" : {
+        "description" : "deletes the document",
+        "operationId" : "deleteDocument",
+        "tags" : [ "Files and Documents" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "ID of the user who wants to download the document.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "profileId",
+          "in" : "query",
+          "description" : "ID of profile. If none, userId will be used.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "documentId",
+          "in" : "path",
+          "description" : "ID of the document to be downloaded.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "file data without content."
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/doctor/" : {
+      "post" : {
+        "description" : "Find a Doctor using criteria",
+        "operationId" : "findDoctors",
+        "tags" : [ "Find A Doctor" ],
+        "security" : [ {
+          "JWT" : [ ]
+        } ],
+        "parameters" : [ {
+          "name" : "doctor",
+          "in" : "body",
+          "description" : "Doctor search criteria",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Doctor"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "List of matching doctors",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Doctor"
+              }
+            }
+          },
+          "default" : {
+            "description" : "unexpected error",
+            "schema" : {
+              "$ref" : "#/definitions/Error"
+            }
+          }
+        }
       }
     }
   },
@@ -1123,6 +1442,9 @@
         },
         "vseeConnectionData" : {
           "$ref" : "#/definitions/VseeConnectionData"
+        },
+        "quickBloxData" : {
+          "$ref" : "#/definitions/QuickBloxConnectionData"
         }
       }
     },
@@ -1163,6 +1485,9 @@
         "text" : {
           "type" : "string",
           "format" : "base64"
+        },
+        "conditions" : {
+          "type" : "string"
         }
       }
     },
@@ -1379,6 +1704,9 @@
         },
         "unit" : {
           "type" : "string"
+        },
+        "statementId" : {
+          "type" : "string"
         }
       }
     },
@@ -1452,6 +1780,9 @@
         },
         "recomendation" : {
           "type" : "string"
+        },
+        "file" : {
+          "$ref" : "#/definitions/FileItem"
         }
       }
     },
@@ -1733,6 +2064,177 @@
       "allOf" : [ {
         "$ref" : "#/definitions/Alert"
       } ]
+    },
+    "QuickBloxConnectionData" : {
+      "properties" : {
+        "applicationId" : {
+          "type" : "string"
+        },
+        "sessiontoken" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Chat" : {
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "language" : {
+          "$ref" : "#/definitions/Language"
+        },
+        "timezone" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string"
+        },
+        "assigned" : {
+          "type" : "boolean"
+        },
+        "doctor" : {
+          "$ref" : "#/definitions/Doctor"
+        },
+        "startDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "endDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "lastMessageDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "lastMessage" : {
+          "type" : "string"
+        },
+        "unreadMessageCount" : {
+          "type" : "integer"
+        },
+        "messageCount" : {
+          "type" : "integer"
+        },
+        "status" : {
+          "type" : "string"
+        },
+        "chatData" : {
+          "$ref" : "#/definitions/QuickBloxChatData"
+        },
+        "messages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ChatMessage"
+          }
+        }
+      }
+    },
+    "QuickBloxChatData" : {
+      "properties" : {
+        "dialogId" : {
+          "type" : "string"
+        },
+        "dialogJid" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ChatMessage" : {
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "date" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "message" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "authorType" : {
+          "type" : "string"
+        },
+        "authorId" : {
+          "type" : "string"
+        },
+        "readed" : {
+          "type" : "boolean"
+        },
+        "attachmentUrls" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "Disease" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Conclusion"
+      } ]
+    },
+    "Doctor" : {
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "image" : {
+          "type" : "string"
+        },
+        "institution" : {
+          "type" : "string"
+        },
+        "phone" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "string"
+        },
+        "country" : {
+          "type" : "string"
+        },
+        "city" : {
+          "type" : "string"
+        },
+        "postcode" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "payment" : {
+          "type" : "string",
+          "enum" : [ "CASHLESS", "PAYMENT" ]
+        },
+        "speciality" : {
+          "type" : "string"
+        },
+        "location" : {
+          "$ref" : "#/definitions/GeoInfo"
+        }
+      }
+    },
+    "GeoInfo" : {
+      "properties" : {
+        "latitude" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "longitude" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "nearby" : {
+          "type" : "boolean"
+        }
+      }
     }
   }
 }
