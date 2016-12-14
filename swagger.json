@@ -522,7 +522,7 @@
         }
       }
     },
-    "/session/{sessionId}/conclusion/{conclusionId}" : {
+    "/session/conclusion/{conclusionId}" : {
       "get" : {
         "description" : "Gets all the conclusion information",
         "operationId" : "getConcusion",
@@ -531,12 +531,6 @@
           "basicAuth" : [ ]
         } ],
         "parameters" : [ {
-          "name" : "sessionId",
-          "in" : "path",
-          "description" : "ID of the session to add responses",
-          "required" : true,
-          "type" : "string"
-        }, {
           "name" : "conclusionId",
           "in" : "path",
           "description" : "Id of the conclusion to be retrieved",
