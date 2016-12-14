@@ -1986,21 +1986,18 @@
           "items" : {
             "$ref" : "#/definitions/FileItem"
           }
+        },
+        "phonePrefix" : {
+          "type" : "string"
+        },
+        "phoneNumber" : {
+          "type" : "string"
         }
       }
     },
     "CallMeBack" : {
       "allOf" : [ {
         "$ref" : "#/definitions/Consultation"
-      }, {
-        "properties" : {
-          "phonePrefix" : {
-            "type" : "string"
-          },
-          "phoneNumber" : {
-            "type" : "string"
-          }
-        }
       } ]
     },
     "VideoCall" : {
