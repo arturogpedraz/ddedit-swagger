@@ -51,13 +51,13 @@
             }
           },
           "401" : {
-            "description" : "Incorrect user credentials.",
+            "description" : "Incorrect user credentials. ErrorCode 2006 -> User not registred.",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
           },
           "403" : {
-            "description" : "ErrorCodes 2007,2008 Terms And Conditions not accepted or out of date.",
+            "description" : "ErrorCodes 2007,2008 -> Terms And Conditions not accepted or out of date.",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
