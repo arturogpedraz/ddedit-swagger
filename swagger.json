@@ -1540,6 +1540,9 @@
         },
         "conditions" : {
           "type" : "string"
+        },
+        "acceptTermsloginInfo" : {
+          "$ref" : "#/definitions/User"
         }
       }
     },
