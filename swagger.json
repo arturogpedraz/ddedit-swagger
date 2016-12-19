@@ -51,7 +51,7 @@
             }
           },
           "401" : {
-            "description" : "Incorrect user credentials. ErrorCode 2006 -> User not registred.",
+            "description" : "2004, 2005 -> Incorrect user credentials. ErrorCode 2006 -> User not registred.",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
