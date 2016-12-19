@@ -57,7 +57,7 @@
             }
           },
           "403" : {
-            "description" : "ErrorCodes 2007-2008 Terms And Conditions not accepted or out of date.",
+            "description" : "ErrorCodes 2007,2008 Terms And Conditions not accepted or out of date.",
             "schema" : {
               "$ref" : "#/definitions/Error"
             }
