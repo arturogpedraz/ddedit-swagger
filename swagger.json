@@ -1,18 +1,14 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "version" : "0.10",
-    "title" : "Mi Salud Al Dia API for Digital Doctor",
-    "description" : "API proposal for DKV - Mi Salud Al Dia to provide to Digital Doctor."
+    "version" : "0.11",
+    "title" : "Digital Doctor",
+    "description" : "Services API for Digital Doctor APP."
   },
   "host" : "digital-doctor.herokuapp.com",
   "basePath" : "/",
   "schemes" : [ "https" ],
   "securityDefinitions" : {
-    "basicAuth" : {
-      "type" : "basic",
-      "description" : "HTTP Basic Authentication, with secuare channel over TLS 1.2."
-    },
     "JWT" : {
       "type" : "apiKey",
       "description" : "Json Web Token",
@@ -36,6 +32,12 @@
           "schema" : {
             "$ref" : "#/definitions/User"
           }
+        }, {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The language to send the e-mail with the password.",
+          "required" : false,
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
@@ -77,8 +79,6 @@
         "operationId" : "addUser",
         "tags" : [ "User Management" ],
         "security" : [ {
-          "basicAuth" : [ ]
-        }, {
           "JWT" : [ ]
         } ],
         "parameters" : [ {
@@ -130,7 +130,7 @@
         "operationId" : "editUser",
         "tags" : [ "User Management" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "id",
@@ -285,7 +285,7 @@
         "operationId" : "getPhr",
         "tags" : [ "PersonalHealthRecord" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "userId",
@@ -334,7 +334,7 @@
         "operationId" : "editPhr",
         "tags" : [ "PersonalHealthRecord" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "userId",
@@ -385,7 +385,7 @@
         "operationId" : "createSession",
         "tags" : [ "Evaluation" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "session",
@@ -404,7 +404,7 @@
         }, {
           "name" : "profileId",
           "in" : "query",
-          "description" : "ID of profile to start the session with. If none anonimous will be used.",
+          "description" : "ProfileID to start the session with. If none anonimous will be used.",
           "required" : false,
           "type" : "string"
         } ],
@@ -430,7 +430,7 @@
         "operationId" : "addResponse",
         "tags" : [ "Evaluation" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "sessionId",
@@ -485,7 +485,7 @@
         "operationId" : "deleteResponse",
         "tags" : [ "Evaluation" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "sessionId",
@@ -534,7 +534,7 @@
         "operationId" : "getConcusion",
         "tags" : [ "Evaluation" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "conclusionId",
@@ -577,7 +577,7 @@
         "operationId" : "textAutocomplete",
         "tags" : [ "Autocomplete" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "word",
@@ -622,7 +622,7 @@
         "operationId" : "statements",
         "tags" : [ "Autocomplete" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "category",
@@ -672,7 +672,7 @@
         "operationId" : "diseases",
         "tags" : [ "Autocomplete" ],
         "security" : [ {
-          "basicAuth" : [ ]
+          "JWT" : [ ]
         } ],
         "parameters" : [ {
           "name" : "word",
@@ -1339,7 +1339,7 @@
         }
       },
       "delete" : {
-        "description" : "deletes the document",
+        "description" : "deletes a document",
         "operationId" : "deleteDocument",
         "tags" : [ "Files and Documents" ],
         "security" : [ {
@@ -1348,7 +1348,7 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
-          "description" : "ID of the user who wants to download the document.",
+          "description" : "ID of the user who wants to delete the document.",
           "required" : true,
           "type" : "string"
         }, {
@@ -1360,7 +1360,7 @@
         }, {
           "name" : "documentId",
           "in" : "path",
-          "description" : "ID of the document to be downloaded.",
+          "description" : "ID of the document to be deleted.",
           "required" : true,
           "type" : "string"
         } ],
