@@ -1838,6 +1838,9 @@
         },
         "file" : {
           "$ref" : "#/definitions/FileItem"
+        },
+        "severe" : {
+          "type" : "boolean"
         }
       }
     },
