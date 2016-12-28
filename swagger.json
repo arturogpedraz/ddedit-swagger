@@ -1011,7 +1011,7 @@
         }
       },
       "post" : {
-        "description" : "Create a chat in order to make a consultation to a doctor.",
+        "description" : "Create or open an already created chat in order to make a new consultation or continue to a doctor.",
         "operationId" : "createChat",
         "tags" : [ "Consultation" ],
         "security" : [ {
@@ -1034,15 +1034,9 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Created chat and its identifier",
+            "description" : "chat created or opened.",
             "schema" : {
               "$ref" : "#/definitions/Chat"
-            }
-          },
-          "402" : {
-            "description" : "CODIGO_ERROR_PENDIENTE",
-            "schema" : {
-              "$ref" : "#/definitions/Error"
             }
           },
           "default" : {
