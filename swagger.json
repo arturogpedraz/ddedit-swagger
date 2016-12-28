@@ -2168,6 +2168,15 @@
         "status" : {
           "type" : "string"
         },
+        "profile" : {
+          "$ref" : "#/definitions/Profile"
+        },
+        "patientFiles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/FileItem"
+          }
+        },
         "chatData" : {
           "$ref" : "#/definitions/QuickBloxChatData"
         },
