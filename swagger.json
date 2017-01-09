@@ -2124,6 +2124,12 @@
         },
         "sessiontoken" : {
           "type" : "string"
+        },
+        "userId" : {
+          "type" : "string"
+        },
+        "password" : {
+          "type" : "string"
         }
       }
     },
