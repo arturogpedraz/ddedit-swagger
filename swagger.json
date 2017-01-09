@@ -2194,6 +2194,9 @@
           "items" : {
             "$ref" : "#/definitions/ChatMessage"
           }
+        },
+        "reason" : {
+          "type" : "string"
         }
       }
     },
