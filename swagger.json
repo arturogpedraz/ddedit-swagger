@@ -2223,10 +2223,10 @@
           "type" : "string"
         },
         "type" : {
-          "enum" : [ "INITIATED", "DIALOG_ASSIGNED", "DIALOG_CLOSED", "DIALOG_CANCELED" ]
+          "type" : "string"
         },
         "authorType" : {
-          "enum" : [ "DOCTOR", "SYSTEM", "CLIENT" ]
+          "type" : "string"
         },
         "authorId" : {
           "type" : "string"
